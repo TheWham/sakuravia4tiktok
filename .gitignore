@@ -1,0 +1,36 @@
+# ── Sensitive config ──
+.env
+*.env.local
+www.douyin.com_cookies.txt
+*_cookies.txt
+
+# ── Data / runtime artifacts ──
+data/
+*.db
+*.db-journal
+
+# ── Tests ──
+tests/
+.pytest_cache/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── IDE / Claude Code ──
+.claude/
+.openspec/
+openspec/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS junk ──
+Thumbs.db
+Desktop.ini
+.DS_Store

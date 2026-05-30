@@ -1,0 +1,23 @@
+[Unit]
+Description=MySakura Douyin AI assistant
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/mysakura
+
+# 保持单进程运行，避免 SQLite 和进程内任务队列被多 worker 同时写入。
+ExecStart=/opt/mysakura/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGINT
+
+# 生产环境不要在这里写 API Key；项目会从 /opt/mysakura/.env 读取敏感配置。
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
+
