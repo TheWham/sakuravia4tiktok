@@ -1,4 +1,4 @@
-# 个人版 抖音 AI 助手 V4
+# 个人版 抖音 AI 助手 V1
 
 ## 功能
 
@@ -14,10 +14,9 @@
 ## 运行要求
 
 - Python 3.11+
-- `yt-dlp`
 - `ffmpeg`
 - 可用的 Xiaomi Mimo API Key
-- 可用的阿里云 OSS Bucket（V4 默认用私有 Bucket + 签名 URL 让 Mimo 读取临时音频/视频）
+- 可用的阿里云 OSS Bucket（V1 默认用私有 Bucket + 签名 URL 让 Mimo 读取临时音频/视频）
 - 可选：可用的阿里云百炼 API Key（当回退到旧 `SUMMARY_PROVIDER=deepseek` + ASR 链路时使用）
 - 可选：可用的 Groq API Key（当 `ASR_PROVIDER=groq` 时使用）
 - 可选：可用的 DeepSeek API Key（当 `SUMMARY_PROVIDER=deepseek` 时使用）
@@ -46,11 +45,11 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 - 阿里云安全组只放行你的公网 IP 到 `22/tcp` 和 `80/tcp`
 - 不迁移本机历史任务数据，服务器从空 SQLite 开始
 - 后续买域名并解析到中国内地 ECS 前，先处理 ICP 备案和 HTTPS
-- 如果 ECS 上解析 抖音返回 `HTTP 412`，配置 `YT_DLP_COOKIES_FILE=data/Douyin-cookies.txt`
+- 如果 ECS 上解析 抖音返回 `HTTP 412`，配置 `DOUYIN_COOKIES_FILE=data/Douyin-cookies.txt`
 
-## Mimo V4 配置
+## Mimo V1 配置
 
-V4 默认使用 Xiaomi Mimo 统一完成理解和 Markdown 生成，减少“ASR 转写 -> DeepSeek 总结”的二次模型调用。默认策略是字幕优先、音频理解兜底、视频理解可选增强：
+V1 默认使用 Xiaomi Mimo 统一完成理解和 Markdown 生成，减少”ASR 转写 -> DeepSeek 总结”的二次模型调用。默认策略是字幕优先、音频理解兜底、视频理解可选增强：
 
 ```dotenv
 SUMMARY_PROVIDER=mimo
@@ -73,7 +72,7 @@ MIMO_VIDEO_RESOLUTION=default
 
 ## OSS 与旧 ASR 配置
 
-V4 的 Mimo 媒体理解和旧 Paraformer ASR 都复用以下 OSS 配置。`ALIYUN_OSS_PUBLIC_BASE_URL` 留空时会使用签名 URL，Bucket 可以保持私有；只有你明确要用公共读 Bucket 时才填写这个公网域名。
+V1 的 Mimo 媒体理解和旧 Paraformer ASR 都复用以下 OSS 配置。`ALIYUN_OSS_PUBLIC_BASE_URL` 留空时会使用签名 URL，Bucket 可以保持私有；只有你明确要用公共读 Bucket 时才填写这个公网域名。
 
 ```dotenv
 ALIYUN_OSS_ACCESS_KEY_ID=
@@ -113,7 +112,7 @@ GROQ_ASR_MODEL=whisper-large-v3-turbo
 
 ## AI 总结模板
 
-V4 默认使用 Mimo 生成 Markdown，总结模板在 `app/services/summary.py` 和 `app/services/mimo.py` 中维护。模板目标不是简单复述转写稿，而是把视频整理成适合手机邮箱阅读、可以长期收藏的中文笔记。
+V1 默认使用 Mimo 生成 Markdown，总结模板在 `app/services/summary.py` 和 `app/services/mimo.py` 中维护。模板目标不是简单复述转写稿，而是把视频整理成适合手机邮箱阅读、可以长期收藏的中文笔记。
 
 ### 旧 DeepSeek 配置模板
 
@@ -177,8 +176,8 @@ DEEPSEEK_MODEL=deepseek-chat
 
 视频信息占位：
 视频标题：{title}
-BV号：{video_id}
-UP主：{uploader}
+视频链接：{webpage_url}
+抖音博主：{uploader}
 时长（秒）：{duration}
 标签：{tags}
 视频简介：{description}
@@ -205,8 +204,8 @@ UP主：{uploader}
 8. “💡 AI 理解与延伸”必须和视频事实分开，避免把推断写成原视频事实。
 
 视频标题：{title}
-BV号：{video_id}
-UP主：{uploader}
+视频链接：{webpage_url}
+抖音博主：{uploader}
 标签：{tags}
 视频简介：{description}
 
@@ -216,7 +215,7 @@ UP主：{uploader}
 
 ## 邮箱模板
 
-V4 邮件由 `app/services/mail.py` 生成。系统会同时发送纯文本正文、HTML 正文和 Markdown 附件，避免不同邮箱客户端显示不一致时看不到完整内容。
+V1 邮件由 `app/services/mail.py` 生成。系统会同时发送纯文本正文、HTML 正文和 Markdown 附件，避免不同邮箱客户端显示不一致时看不到完整内容。
 
 ### SMTP 配置模板
 
@@ -241,7 +240,7 @@ MAIL_TO=默认收件邮箱地址
 ### 邮件标题模板
 
 ```text
-B站视频总结 - {视频标题}
+抖音视频总结 - {视频标题}
 ```
 
 ### 纯文本正文模板
